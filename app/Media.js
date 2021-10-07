@@ -1,10 +1,11 @@
 /**
  * Media Component
  */
-import {Mesh, Program, Texture} from "ogl";
+import { Mesh, Program, Texture } from "ogl";
 
 import fragment from "shaders/image-fragment.glsl";
 import vertex from "shaders/image-vertex.glsl";
+import Number from "./Number";
 
 export default class {
     constructor({ geometry, gl, image, index, length, renderer, scene, screen, text, viewport }) {
@@ -69,6 +70,11 @@ export default class {
     }
 
     createTitle() {
-        
+        this.number = new Number({
+            gl: this.gl,
+            plane: this.plane,
+            renderer: this.renderer,
+            text: this.index % (this.length / 2)
+        });
     }
 }

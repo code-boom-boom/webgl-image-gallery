@@ -1,5 +1,5 @@
 /**
- * Number Class
+ * Title class
  */
 import AutoBind from "auto-bind";
 import { Color, Geometry, Mesh, Program, Text, Texture } from "ogl";
@@ -7,8 +7,8 @@ import { Color, Geometry, Mesh, Program, Text, Texture } from "ogl";
 import fragment from "shaders/text-fragment.glsl";
 import vertex from "shaders/text-vertex.glsl";
 
-import font from "fonts/forma.json";
-import src from "fonts/forma.png";
+import font from "fonts/freight.json";
+import src from "fonts/freight.png";
 
 export default class {
     constructor({ gl, plane, renderer, text }) {
@@ -17,11 +17,9 @@ export default class {
         this.gl = gl;
         this.plane = plane;
         this.renderer = renderer;
-        this.text = text + 1;
+        this.text = text;
 
         this.createShader();
-
-        this.createMesh();
     }
 
     createShader() {
@@ -90,8 +88,9 @@ export default class {
         const text = new Text({
             align: "center",
             font,
-            size: 0.025,
-            text: `${this.text < 10 ? `0${this.text}` : this.text}`,
+            letterSpacing: -0.05,
+            size: 0.08,
+            text: this.text,
             wordSpacing: 0
         });
 
@@ -104,12 +103,8 @@ export default class {
 
         geometry.computeBoundingBox();
 
-        this.mesh = new Mesh(this.gl, {
-            geometry,
-            program: this.program
-        });
-
-        this.mesh.position.y = - this.plane.scale.y * 0.5 - 0.03;
+        this.mesh = new Mesh(this.gl, { geometry, program: this.program });
+        this.mesh.position.y = - this.plane.scale.y * 0.5 - 0.085;
         this.mesh.setParent(this.plane);
     }
 }
