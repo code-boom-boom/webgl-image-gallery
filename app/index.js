@@ -19,6 +19,7 @@ import Image10 from "images/10.jpg";
 import Image11 from "images/11.jpg";
 import Image12 from "images/12.jpg";
 import Media from "./Media";
+import Background from "./Background";
 
 export default class App {
     constructor() {
@@ -96,7 +97,10 @@ export default class App {
         };
 
         if (this.medias) {
-            // TODO: Media resize function
+            this.medias.forEach(media => media.onResize({
+                screen: this.screen,
+                viewport: this.viewport
+            }));
         }
     }
 
@@ -152,8 +156,27 @@ export default class App {
         }));
     }
 
+    /**
+     * Create background
+     */
+    createBackground() {
+        this.background = new Background({
+            gl: this.gl,
+            scene: this.scene,
+            viewport: this.viewport
+        });
+    }
+
     onCheck() {
-        return;
+        const { width } = this.medias[0];
+        const itemIndex = Math.round(Math.abs(this.scroll.target) / width);
+        const item = width * itemIndex;
+
+        if (this.scroll.target < 0) {
+            this.scroll.target = -item;
+        } else {
+            this.scroll.target = item;
+        }
     }
 
 }
