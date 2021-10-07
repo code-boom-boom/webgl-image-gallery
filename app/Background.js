@@ -6,6 +6,8 @@ import {Color, Mesh, Plane, Program} from "ogl";
 import fragment from "shaders/background-fragment.glsl";
 import vertex from "shaders/background-vertex.glsl";
 
+import { random } from "utils/math";
+
 export default class {
     constructor({ gl, scene, viewport }) {
         this.gl = gl;

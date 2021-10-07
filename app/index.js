@@ -42,8 +42,32 @@ export default class App {
 
         this.createGeometry();
         this.createMedias();
+        this.createBackground();
+
+        this.createPreloader();
     }
 
+    /**
+     * Create Preloader
+     */
+    createPreloader() {
+        Array.from(this.mediasImages).forEach(({ image: source }) => {
+            const image = new Image();
+
+            this.loaded = 0;
+
+            image.src = source;
+            image.onload = _ => {
+                this.loaded += 1;
+
+                if (this.loaded === this.mediasImages.length) {
+                    document.documentElement.classList.remove("loading");
+                    document.documentElement.classList.add("loaded");
+                }
+            }
+        })
+    }
+    
     /**
      * Create OGL renderer
      */
@@ -115,7 +139,7 @@ export default class App {
     }
 
     createMedias() {
-        this.mediasImagesImages = [
+        this.mediasImages = [
             { image: Image1, text: "New Synagogue" },
             { image: Image2, text: "Paro Taktsang" },
             { image: Image3, text: "Petra" },
@@ -142,12 +166,12 @@ export default class App {
             { image: Image12, text: "The Prophet's Mosque" }
         ];
 
-        this.medias = this.mediasImagesImages.map(({ image, text }, index) => new Media({
+        this.medias = this.mediasImages.map(({ image, text }, index) => new Media({
             geometry: this.planeGeometry,
             gl: this.gl,
             image,
             text,
-            length: this.mediasImagesImages.length,
+            length: this.mediasImages.length,
             renderer: this.renderer,
             scene: this.scene,
             screen: this.screen,
