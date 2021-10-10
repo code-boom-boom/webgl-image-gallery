@@ -20,6 +20,7 @@ export default class {
         this.text = text;
 
         this.createShader();
+        this.createMesh();
     }
 
     createShader() {

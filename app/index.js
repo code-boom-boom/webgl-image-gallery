@@ -2,6 +2,7 @@
  * Main App File
  */
 import { Renderer, Camera, Plane, Transform } from "ogl";
+import NormalizeWheel from "normalize-wheel";
 
 import { debounce } from "lodash";
 
@@ -48,6 +49,8 @@ export default class App {
         this.createBackground();
 
         this.update();
+
+        this.addEventListeners();
 
         this.createPreloader();
     }
@@ -102,6 +105,16 @@ export default class App {
     }
 
     /**
+     * Create Geometry
+     */
+    createGeometry() {
+        this.planeGeometry = new Plane(this.gl, {
+            heightSegments: 50,
+            widthSegments: 100
+        });
+    }
+
+    /**
      * Resize
      */
     onResize() {
@@ -131,16 +144,6 @@ export default class App {
                 viewport: this.viewport
             }));
         }
-    }
-
-    /**
-     * Create Geometry
-     */
-    createGeometry() {
-        this.planeGeometry = new Plane(this.gl, {
-            heightSegments: 50,
-            widthSegments: 100
-        });
     }
 
     createMedias() {
@@ -175,12 +178,12 @@ export default class App {
             geometry: this.planeGeometry,
             gl: this.gl,
             image,
-            text,
+            index,
             length: this.mediasImages.length,
             renderer: this.renderer,
             scene: this.scene,
             screen: this.screen,
-            index,
+            text,
             viewport: this.viewport
         }));
     }
@@ -238,6 +241,57 @@ export default class App {
         window.requestAnimationFrame(this.update.bind(this));
     }
 
+    /**
+     * Listeners
+     */
+    addEventListeners() {
+        window.addEventListener("resize", this.onResize.bind(this));
+
+        window.addEventListener("mousewheel", this.onWheel.bind(this));
+        window.addEventListener("wheel", this.onWheel.bind(this));
+
+        window.addEventListener("mousedown", this.onTouchDown.bind(this));
+        window.addEventListener("mousemove", this.onTouchMove.bind(this));
+        window.addEventListener("mouseup", this.onTouchUp.bind(this));
+
+        window.addEventListener("touchstart", this.onTouchDown.bind(this));
+        window.addEventListener("touchmove", this.onTouchMove.bind(this));
+        window.addEventListener("touchend", this.onTouchUp.bind(this));
+    }
+
+    /**
+     * Events
+     */
+    onTouchDown(event) {
+        this.isDown = true;
+
+        this.scroll.position = this.scroll.current;
+        this.start = event.touches ? event.touches[0].clientX : event.clientX;
+    }
+
+    onTouchMove (event) {
+        if (!this.isDown) return
+
+        const x = event.touches ? event.touches[0].clientX : event.clientX
+        const distance = (this.start - x) * 0.01
+
+        this.scroll.target = this.scroll.position + distance
+    }
+
+    onTouchUp (event) {
+        this.isDown = false
+
+        this.onCheck()
+    }
+
+    onWheel (event) {
+        const normalized = NormalizeWheel(event)
+        const speed = normalized.pixelY
+
+        this.scroll.target += speed * 0.005
+
+        this.onCheckDebounce()
+    }
 }
 
 new App();

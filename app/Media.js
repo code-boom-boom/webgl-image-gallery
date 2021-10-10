@@ -105,7 +105,7 @@ export default class {
         const viewportOffset = this.viewport.width;
 
         this.isBefore = this.plane.position.x + planeOffset < - viewportOffset;
-        this.isAfter = this.plane.position.x - planeOffset < viewportOffset;
+        this.isAfter = this.plane.position.x - planeOffset > viewportOffset;
 
         if (direction === "right" && this.isBefore) {
             this.extra -= this.widthTotal;
