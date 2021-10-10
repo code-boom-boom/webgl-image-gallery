@@ -39,8 +39,7 @@ export default class {
             ${fragment}
         `;
 
-        const vertex300 = `
-            #version 300 es
+        const vertex300 = `#version 300 es
             
             #define attribute in
             #define varying out
@@ -48,8 +47,7 @@ export default class {
             ${vertex}
         `;
 
-        const fragment300 = `
-            #version 300 es
+        const fragment300 = `#version 300 es
             
             precision highp float;
             

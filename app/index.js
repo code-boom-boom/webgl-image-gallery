@@ -1,9 +1,11 @@
 /**
  * Main App File
  */
-import { Camera, Plane, Renderer, Transform } from "ogl";
+import { Renderer, Camera, Plane, Transform } from "ogl";
 
 import { debounce } from "lodash";
+
+import { lerp } from "./utils/math";
 
 // Image files for the gallery
 import Image1 from "images/1.jpg";
@@ -18,6 +20,7 @@ import Image9 from "images/9.jpg";
 import Image10 from "images/10.jpg";
 import Image11 from "images/11.jpg";
 import Image12 from "images/12.jpg";
+
 import Media from "./Media";
 import Background from "./Background";
 
@@ -43,6 +46,8 @@ export default class App {
         this.createGeometry();
         this.createMedias();
         this.createBackground();
+
+        this.update();
 
         this.createPreloader();
     }
@@ -201,6 +206,36 @@ export default class App {
         } else {
             this.scroll.target = item;
         }
+    }
+
+    /**
+     * Update
+     */
+    update() {
+        this.scroll.current = lerp(this.scroll.current, this.scroll.target, this.scroll.ease);
+
+        if (this.scroll.current > this.scroll.last) {
+            this.direction = "right";
+        } else {
+            this.direction = "left";
+        }
+
+        if (this.medias) {
+            this.medias.forEach(media => media.update(this.scroll, this.direction));
+        }
+
+        if (this.background) {
+            this.background.update(this.scroll, this.direction);
+        }
+
+        this.renderer.render({
+            scene: this.scene,
+            camera: this.camera
+        });
+
+        this.scroll.last = this.scroll.current;
+
+        window.requestAnimationFrame(this.update.bind(this));
     }
 
 }
